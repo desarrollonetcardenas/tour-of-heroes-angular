@@ -2,7 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Hero } from '../hero';
-import { HeroService } from '../hero.service';
+import { HeroService } from '../services/hero.service';
+import { MessageService } from '../services/message.service';
+
 
 @Component({
   selector: 'app-hero-detail',
@@ -13,7 +15,7 @@ export class HeroDetailComponent implements OnInit {
   @Input() hero: Hero;
 
   constructor( private route: ActivatedRoute, private heroService: HeroService,
-      private location: Location ) {
+      private location: Location, private messageService: MessageService ) {
     this.hero = new Hero();
   }
 
@@ -32,4 +34,12 @@ export class HeroDetailComponent implements OnInit {
   goBack() {
     this.location.back();
   }
+
+  save( hero: Hero ): void {
+    this.heroService.updateHero( hero )
+    .subscribe(res =>
+        this.messageService.add(`Hero updated name ${hero.name}`)
+    );
+  }
+
 }

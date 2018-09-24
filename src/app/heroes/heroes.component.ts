@@ -1,7 +1,7 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { Hero } from '../hero';
-import { HeroService } from '../hero.service';
-import { MessageService } from '../message.service';
+import { HeroService } from '../services/hero.service';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-heroes',
@@ -24,4 +24,20 @@ export class HeroesComponent implements OnInit {
       this.heroes = heroes;
     });
   }
+
+  add(name: string): void {
+    name = name.trim();
+    if (!name) { return; }
+    this.heroService.addHero({ name } as Hero)
+      .subscribe(hero => {
+        this.heroes.push(hero);
+      });
+  }
+
+  deleteHero( hero: Hero ): void {
+    this.heroes = this.heroes.filter(h => h.id !== hero.id);
+    this.heroService.deleteHero(hero)
+    .subscribe(_ => this.messageService.add(`Hero ${hero.name} was deleted...`));
+  }
+
 }
